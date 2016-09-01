@@ -1,15 +1,15 @@
 module ActiveRecord
   # monkey-patch ActiveRecord::Base, add #destroyable? and #destroyable
   class Base
-    before_destroy :raise_unless_destroyable
+    before_destroy :check_destroyable
 
     # override this method to return false when this object should not be destroyed in child classes
     def destroyable?
       true
     end
 
-    def raise_unless_destroyable
-      raise ActiveRecord::CannotBeDestroyedNow unless destroyable?
+    def check_destroyable
+      !!destroyable? # ensure this returns either true or false, only false can break the callback chain
     end
   end
 end
